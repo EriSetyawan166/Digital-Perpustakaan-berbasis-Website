@@ -5735,6 +5735,110 @@ button.close {
   overflow: hidden;
 }
 
+.card-img-top {
+  height: 250px; /* Ubah tinggi sesuai kebutuhan Anda */
+  object-fit: cover;
+}
+
+
+.modal-body .image-container {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-body .image-container img {
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.card-footer {
+  background-color: transparent;
+  border-top: none;
+}
+
+.carousel-control-prev,
+    .carousel-control-next {
+      position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+    color: #fff;
+    padding: 10px;
+    border-radius: 50%;
+    }
+
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+        opacity: 0.8;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #fff;
+    }
+
+    .carousel-control-prev {
+        left: 0px;
+    }
+
+    .carousel-control-next {
+        right: -20px;
+    }
+
+    .carousel-indicators {
+        position: relative;
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .carousel-indicators li {
+        background-color: #000;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin: 0 3px;
+        transition: background-color 0.3s;
+    }
+
+    .carousel-indicators .active {
+        background-color: #fff;
+    }
+
+    .carousel-navigation {
+        position: absolute;
+        bottom: 10;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        z-index: 99;
+    }
+
+    .carousel-navigation button {
+        color: #fff;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        transition: opacity 0.3s;
+    }
+
+    .carousel-navigation button:hover {
+        opacity: 0.8;
+    }
+
 .modal {
   position: fixed;
   top: 0;
@@ -6332,7 +6436,6 @@ button.close {
 .carousel-indicators {
   position: absolute;
   right: 0;
-  bottom: 10px;
   left: 0;
   z-index: 15;
   display: flex;

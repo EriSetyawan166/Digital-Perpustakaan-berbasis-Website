@@ -18,8 +18,8 @@ return new class extends Migration
             $table->integer('jumlah');
             $table->string('file_path')->nullable();
             $table->string('cover_image_path')->nullable();
-            $table->foreignId('kategori_id')->constrained('kategori_buku');
-            $table->foreignId('pengguna_id')->constrained('users');
+            $table->foreignId('kategori_id')->constrained('kategori_buku')->onDelete('cascade');;
+            $table->foreignId('pengguna_id')->constrained('users')->onDelete('cascade');;
             $table->timestamps();   
         });
     }

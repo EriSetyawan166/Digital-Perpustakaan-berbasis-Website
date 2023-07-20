@@ -176,9 +176,155 @@
                         </div>
                     </div>
                 </div>
-                  <!-- PlaceHolder untuk Daftar/List Data Buku -->
+                <table class="table table-hover">
+                  <thead>
+                      <tr>
+                          <th>No</th>
+                          <th>Judul</th>
+                          <th>Kategori</th>
+                          <th>Deskripsi</th>
+                          <th>Jumlah</th>
+                          <th>Uploader</th>
+                          <th>Aksi</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      @foreach($buku as $item)
+                      <tr>
+                          <td>{{($buku->currentPage() - 1) * $buku->perPage() + $loop->iteration}}</td>
+                          <td>{{ $item->judul }}</td>
+                          <td>{{ $item->category->nama }}</td>
+                          <td>{{ $item->deskripsi }}</td>
+                          <td>{{ $item->jumlah }}</td>
+                          <td>{{ $item->user->nama }}</td>
+                          <td>
+                              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBuku{{ $item->id }}">Detail</button>
+                          </td>
+                      </tr>
+                      @endforeach
+
+                      <!-- Modal -->
+                      @foreach($buku as $item)
+                      <div class="modal fade" id="modalBuku{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="modalBuku{{ $item->id }}Label" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" role="document">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                      </button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <div class="row">
+                                          <div class="col-md-4">
+                                              <div class="image-container">
+                                                  <img class="card-img-top img-fluid" src="{{ asset('uploads/cover/' . $item->cover_image_path) }}" alt="{{ $item->judul }}">
+                                              </div>
+                                          </div>
+                                          <div class="col-md-8">
+                                              <h5 class="modal-title font-weight-bold">{{ $item->judul }}</h5>
+                                              <p>{{ $item->deskripsi }}</p>
+                                              <p>Jumlah: {{ $item->jumlah }}</p>
+                                              <p>Uploader: {{ $item->user->nama }}</p>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <a href="{{ asset('uploads/buku/' . $item->file_path) }}" target="_blank" class="btn btn-primary">View PDF</a>
+                                      <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalEdit{{ $item->id }}">
+                                          Edit
+                                      </button>
+                                      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus{{ $item->id }}">
+                                          Hapus
+                                      </button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      @endforeach
+                      @foreach($buku as $item)
+                     <!-- Modal Edit Buku -->
+<div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="modalEdit{{ $item->id }}Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEdit{{ $item->id }}Label">Edit Buku</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form Edit Buku -->
+                <form action="{{ route('buku.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <div class="form-group">
+                        <input type="text" class="form-control text-dark" id="edit-judul" name="judul" value="{{ $item->judul }}" required>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control text-dark" id="edit-kategori" name="kategori" required>
+                            @foreach($kategori as $k)
+                                <option value="{{ $k->id }}" {{ $item->kategori_id == $k->id ? 'selected' : '' }}>{{ $k->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control text-dark" id="edit-deskripsi" name="deskripsi" rows="3" required>{{ $item->deskripsi }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" class="form-control text-dark" id="edit-jumlah" name="jumlah" value="{{ $item->jumlah }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-file_buku">Upload File Buku (PDF)</label>
+                        <input type="file" class="form-control-file" id="edit-file_buku" name="file_buku" accept=".pdf">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-cover_buku">Upload Cover Buku (JPEG/JPG/PNG)</label>
+                        <input type="file" class="form-control-file" id="edit-cover_buku" name="cover_buku" accept=".jpeg,.jpg,.png">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@endforeach
+
+                      <!-- Modal Konfirmasi Hapus -->
+                      <div class="modal fade" id="modalHapus{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="modalHapus{{ $item->id }}Label" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h5 class="modal-title" id="modalHapus{{ $item->id }}Label">Konfirmasi Hapus</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                      </button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <p>Apakah Anda yakin ingin menghapus buku ini?</p>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                      <form action="{{ route('buku.destroy', $item->id) }}" method="POST">
+                                          @csrf
+                                          @method('DELETE')
+                                          <button type="submit" class="btn btn-danger">Hapus</button>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+
+                  </tbody>
+                </table>
                 </div>
               </div>
+              <div class="card-footer">
+
+              {{$buku->links("pagination::bootstrap-5")->withClass('custom-pagination')}}
+
+            </div>
             </div>
           </div>
         </div>

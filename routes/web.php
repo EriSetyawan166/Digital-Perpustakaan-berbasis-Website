@@ -33,6 +33,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin.redirect']], 
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::resource('buku', AdminBukuController::class)->except(['show']);
     Route::resource('kategori', AdminKategoriController::class)->except(['show']);
+    Route::get('/filter/{kategori}', [AdminDashboardController::class, 'filter'])->name('buku.filter');
+
 });
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth', 'user.redirect']], function () {

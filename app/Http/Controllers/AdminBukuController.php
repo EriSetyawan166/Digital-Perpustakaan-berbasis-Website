@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Buku;
 use App\Models\KategoriBuku;
+use Illuminate\Support\Facades\Storage;
 
 class AdminBukuController extends Controller
 {
@@ -15,7 +16,8 @@ class AdminBukuController extends Controller
     public function index()
     {
         $kategori = KategoriBuku::all();
-        return view('admin.buku', compact("kategori"));
+        $buku = Buku::paginate(5);
+        return view('admin.buku', compact("kategori", "buku"));
     }
 
     /**
@@ -84,16 +86,35 @@ class AdminBukuController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
-    }
+        $buku = Buku::findOrFail($id);
+        
+        $buku->judul = $request->input('judul');
+        $buku->kategori_id = $request->input('kategori');
+        $buku->deskripsi = $request->input('deskripsi');
+        $buku->jumlah = $request->input('jumlah');
+        
+        $buku->save();
 
+        return redirect()->route('buku.index')->with('success', 'Buku berhasil diupdate');
+    }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $buku = Buku::findOrFail($id);
+
+        // Hapus file fisik terkait buku
+        Storage::delete([
+            'uploads/cover/' . $buku->cover_image_path,
+            'uploads/buku/' . $buku->file_path
+        ]);
+
+        // Hapus data buku dari database
+        $buku->delete();
+
+        return redirect()->route('buku.index')->with('success', 'Buku berhasil dihapus.');
     }
 }

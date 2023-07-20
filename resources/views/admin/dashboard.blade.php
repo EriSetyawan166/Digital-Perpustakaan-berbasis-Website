@@ -128,7 +128,7 @@
                     <i class="material-icons">book</i>
                   </div>
                   <p class="card-category">Total Buku</p>
-                  <h3 class="card-title">49
+                  <h3 class="card-title">{{$total_buku}}
                   </h3>
                 </div>
                 <div class="card-footer">
@@ -161,7 +161,7 @@
                     <i class="material-icons">person</i>
                   </div>
                   <p class="card-category">Total User</p>
-                  <h3 class="card-title">5</h3>
+                  <h3 class="card-title">{{$total_user}}</h3>
                 </div>
                 <div class="card-footer">
                   <div class="stats">
@@ -171,28 +171,113 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-lg-12 col-md-12">
-              <div class="card">
-                <div class="card-header card-header-primary">
-                  <h4 class="card-title">Data Buku</h4>
-                  <p class="card-category">List Buku yang Terdaftar</p>
-                </div>
-                <div class="card-body table-responsive">
-                  <!-- PlaceHolder untuk Daftar/List Data Buku -->
-                </div>
-              </div>
+          <div class="row mb-3">
+            <div class="col-md-2">
+              <select class="form-control" id="filterKategori" name="filterKategori">
+                  <option value="all" class="text-dark" {{ request('kategori') == 'all' ? 'selected' : '' }}>Semua Kategori</option>
+                  @foreach($kategori as $k)
+                  <option value="{{ $k->id }}" class="text-dark" {{ request('kategori') == $k->id ? 'selected' : '' }}>{{ $k->nama }}</option>
+                  @endforeach
+              </select>
+            </div>
+
+            <div class="col-md-6">
+                <button class="btn btn-primary" id="btnFilter">Filter</button>
             </div>
           </div>
+          <div class="row">
+              <div class="col-12">
+                  <div id="bookCarousel" class="carousel slide" data-ride="carousel">
+                      <div class="carousel-inner">
+                          @php $count = 0; @endphp
+                          @foreach($buku->chunk(6) as $chunk)
+                          <div class="carousel-item{{ $count == 0 ? ' active' : '' }}">
+                              <div class="row">
+                                  @foreach($chunk as $item)
+                                  <div class="col-lg-2 col-md-3 col-sm-6">
+                                      <div class="card">
+                                          <img class="card-img-top" src="{{ asset('uploads/cover/' . $item->cover_image_path) }}" alt="{{ $item->judul }}">
+                                          <div class="card-body text-center">
+                                              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBuku{{ $item->id }}">Detail</button>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  @endforeach
+                              </div>
+                          </div>
+                          @php $count++; @endphp
+                          @endforeach
+                      </div>
+                      <div class="row">
+                          <div class="col-12 text-center">
+                              <ol class="carousel-indicators">
+                                  @php $count = 0; @endphp
+                                  @foreach($buku->chunk(6) as $chunk)
+                                  <li data-target="#bookCarousel" data-slide-to="{{ $count }}" class="{{ $count == 0 ? 'active' : '' }}"></li>
+                                  @php $count++; @endphp
+                                  @endforeach
+                              </ol>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-12 text-center">
+                              <a class="carousel-control-prev" href="#bookCarousel" role="button" data-slide="prev">
+                                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                  <span class="sr-only">Previous</span>
+                              </a>
+                              <a class="carousel-control-next" href="#bookCarousel" role="button" data-slide="next">
+                                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                  <span class="sr-only">Next</span>
+                              </a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Modal -->
+          @foreach($buku as $item)
+          <div class="modal fade" id="modalBuku{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="modalBuku{{ $item->id }}Label" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                      </div>
+                      <div class="modal-body">
+                          <div class="row">
+                              <div class="col-md-4">
+                                  <div class="image-container">
+                                      <img class="card-img-top img-fluid" src="{{ asset('uploads/cover/' . $item->cover_image_path) }}" alt="{{ $item->judul }}">
+                                  </div>
+                              </div>
+                              <div class="col-md-8">
+                                  <h5 class="modal-title font-weight-bold" id="modalBuku{{ $item->id }}Label">{{ $item->judul }}</h5>
+                                  <p>{{ $item->deskripsi }}</p>
+                                  <p>Jumlah: {{ $item->jumlah }}</p>
+                                  <p>Uploader: {{ $item->user->nama }}</p>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                          <a href="{{ asset('uploads/buku/' . $item->file_path) }}" target="_blank" class="btn btn-primary">View PDF</a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          @endforeach
+          
+          </div>
         </div>
-      </div>
-      <footer class="footer">
+        <footer class="footer">
         <div class="container-fluid">
           <div class="copyright float-right" id="date">
             Muhammad Eri Setyawan
           </div>
         </div>
       </footer>
+      </div>
+      
       <script>
         const x = new Date().getFullYear();
         let date = document.getElementById('date');
@@ -384,6 +469,21 @@
       md.initDashboardPageCharts();
 
     });
+  </script>
+
+  <script>
+      $('.carousel').carousel({
+          interval: false
+      });
+  </script>
+
+  <script>
+      $('#btnFilter').click(function() {
+          var selectedKategori = $('#filterKategori').val();
+          var url = "{{ route('buku.filter', ':kategori') }}";
+          url = url.replace(':kategori', selectedKategori);
+          window.location.href = url;
+      });
   </script>
 </body>
 @include('sweetalert::alert')
