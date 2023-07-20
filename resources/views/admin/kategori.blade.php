@@ -27,6 +27,14 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
   <!-- CSS Files -->
   <link rel="stylesheet" href="{{ asset('css/material-dashboard.css') }}">
+  <style>
+    .card-footer {
+        background-color: transparent;
+        border-top: none;
+    }
+
+    
+  </style>
 </head>
 
 <body class="dark-edition">
@@ -42,7 +50,7 @@
         </a></div>
       <div class="sidebar-wrapper">
         <ul class="nav">
-          <li class="nav-item active  ">
+          <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.dashboard') }}">
               <i class="material-icons">dashboard</i>
               <p>Dashboard</p>
@@ -54,7 +62,7 @@
               <p>Buku</p>
             </a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item active">
             <a class="nav-link" href="{{ route('kategori.index') }}">
               <i class="material-icons">category</i>
               <p>Kategori</p>
@@ -121,67 +129,124 @@
       <div class="content">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
-              <div class="card card-stats">
-                <div class="card-header card-header-primary card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">book</i>
-                  </div>
-                  <p class="card-category">Total Buku</p>
-                  <h3 class="card-title">49
-                  </h3>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                  <i class="material-icons">date_range</i> Real Time
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
-              <div class="card card-stats">
-                <div class="card-header card-header-success card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">category</i>
-                  </div>
-                  <p class="card-category">Total Kategori</p>
-                  <h3 class="card-title">{{$total_kategori}}</h3>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                  <i class="material-icons">date_range</i> Real Time
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
-              <div class="card card-stats">
-                <div class="card-header card-header-secondary card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">person</i>
-                  </div>
-                  <p class="card-category">Total User</p>
-                  <h3 class="card-title">5</h3>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                  <i class="material-icons">date_range</i> Real Time
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
             <div class="col-lg-12 col-md-12">
               <div class="card">
                 <div class="card-header card-header-primary">
-                  <h4 class="card-title">Data Buku</h4>
-                  <p class="card-category">List Buku yang Terdaftar</p>
+                  <h4 class="card-title">Data Kategori</h4>
+                  <p class="card-category">List Kategori</p>
                 </div>
                 <div class="card-body table-responsive">
-                  <!-- PlaceHolder untuk Daftar/List Data Buku -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalTambahKategori">Tambah Data</button>
+
+                <!-- Modal Tambah Kategori -->
+                <div class="modal fade" id="modalTambahKategori" tabindex="-1" role="dialog" aria-labelledby="modalTambahKategoriLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="modalTambahKategoriLabel">Tambah Data Kategori</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <form action="{{ route('kategori.store') }}" method="POST">
+                          @csrf
+                          <div class="form-group">
+                            <input value="{{ old('email') }}" type="text" class="form-control text-dark form-control-user @if($errors->has('nama_kategori')) is-invalid @endif" id="nama_kategori" name="nama_kategori" placeholder="Masukkan Nama Kategori">
+                            @if($errors->has('email'))
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $errors->first('email') }}</strong>
+                                            </span>
+                                        @endif
+                          </div>
+                          <button type="submit" class="btn btn-primary">Simpan</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Kategori Buku</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($kategoris as $kategori)
+                            <tr>
+                                <td>{{($kategoris->currentPage() - 1) * $kategoris->perPage() + $loop->iteration}}</td>
+                                <td>{{ $kategori->nama }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalEditKategori{{$kategori->id}}">Edit</button>
+                                    <a href="" class="btn btn-danger" data-toggle="modal" data-target="#modalHapusKategori{{$kategori->id}}"></i>Hapus</a>
+                                </td>
+                            </tr>
+                            @endforeach
+
+                            @foreach ($kategoris as $kategori)
+                            <div class="modal fade" id="modalHapusKategori{{$kategori->id}}" tabindex="-1" role="dialog" aria-labelledby="modalHapusKategoriLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="modalHapusKategoriLabel">Hapus Kategori</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  <p>Apakah Anda yakin ingin menghapus kategori <strong>{{$kategori->nama}}</strong>?</p>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                  <form action="{{ route('kategori.destroy', $kategori->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                            </div>
+
+                            <!-- Modal Edit Kategori -->
+                            <div class="modal fade" id="modalEditKategori{{$kategori->id}}" tabindex="-1" role="dialog" aria-labelledby="modalEditKategoriLabel" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalEditKategoriLabel">Edit Kategori</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <!-- Form edit kategori -->
+                                    <form action="{{ route('kategori.update', $kategori->id) }}" method="POST">
+                                      @csrf
+                                      @method('PUT')
+                                      <div class="form-group">
+                                        <input value="{{ $kategori->nama }}" type="text" class="form-control text-dark" id="edit_nama_kategori" name="nama_kategori" placeholder="Nama Kategori">
+                                      </div>
+                                      <button type="submit" class="btn btn-primary">Simpan</button>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
               </div>
+              <div class="card-footer">
+
+              {{$kategoris->links("pagination::bootstrap-5")->withClass('custom-pagination')}}
+
+            </div>
             </div>
           </div>
         </div>

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class KategoriBuku extends Model
 {
+    protected $table = 'kategori_buku';
+    protected $fillable = ['nama'];
     public function books()
     {
         return $this->hasMany(Book::class);

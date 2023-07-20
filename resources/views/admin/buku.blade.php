@@ -42,13 +42,13 @@
         </a></div>
       <div class="sidebar-wrapper">
         <ul class="nav">
-          <li class="nav-item active  ">
+          <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.dashboard') }}">
               <i class="material-icons">dashboard</i>
               <p>Dashboard</p>
             </a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item active">
             <a class="nav-link" href="{{ route('buku.index') }}">
               <i class="material-icons">book</i>
               <p>Buku</p>
@@ -121,57 +121,6 @@
       <div class="content">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
-              <div class="card card-stats">
-                <div class="card-header card-header-primary card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">book</i>
-                  </div>
-                  <p class="card-category">Total Buku</p>
-                  <h3 class="card-title">49
-                  </h3>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                  <i class="material-icons">date_range</i> Real Time
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
-              <div class="card card-stats">
-                <div class="card-header card-header-success card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">category</i>
-                  </div>
-                  <p class="card-category">Total Kategori</p>
-                  <h3 class="card-title">{{$total_kategori}}</h3>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                  <i class="material-icons">date_range</i> Real Time
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
-              <div class="card card-stats">
-                <div class="card-header card-header-secondary card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">person</i>
-                  </div>
-                  <p class="card-category">Total User</p>
-                  <h3 class="card-title">5</h3>
-                </div>
-                <div class="card-footer">
-                  <div class="stats">
-                  <i class="material-icons">date_range</i> Real Time
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
             <div class="col-lg-12 col-md-12">
               <div class="card">
                 <div class="card-header card-header-primary">
@@ -179,6 +128,54 @@
                   <p class="card-category">List Buku yang Terdaftar</p>
                 </div>
                 <div class="card-body table-responsive">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalTambahBuku">Tambah Buku</button>
+                                <!-- Modal Tambah Buku -->
+                <div class="modal fade" id="modalTambahBuku" tabindex="-1" role="dialog" aria-labelledby="modalTambahBukuLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalTambahBukuLabel">Tambah Buku</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                            <!-- Form tambah buku -->
+                            <form action="{{ route('buku.store') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-group">
+                                    <input type="text" class="form-control text-dark" id="judul" name="judul" placeholder="Masukkan Judul">
+                                </div>
+                                <div class="form-group">
+                                    <select class="form-control text-dark" id="kategori" name="kategori">
+                                        <option value="" disabled selected>Pilih Kategori</option>
+                                        @foreach($kategori as $k)
+                                            <option value="{{ $k->id }}">{{ $k->nama }}</option>
+                                        @endforeach
+                                        
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <textarea class="form-control text-dark" id="deskripsi" name="deskripsi" rows="3" placeholder="Masukkan Deskripsi"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control text-dark" id="jumlah" name="jumlah" placeholder="Masukkan Jumlah">
+                                </div>
+                                <div class="form-group">
+                                    <label for="file_buku">Upload File Buku (PDF)</label>
+                                    <input type="file" class="form-control-file text-dark" id="file_buku" name="file_buku" accept=".pdf">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cover_buku">Upload Cover Buku (JPEG/JPG/PNG)</label>
+                                    <input type="file" class="form-control-file text-dark" id="cover_buku" name="cover_buku" accept=".jpeg,.jpg,.png">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                            </form>
+                        </div>
+
+                        </div>
+                    </div>
+                </div>
                   <!-- PlaceHolder untuk Daftar/List Data Buku -->
                 </div>
               </div>

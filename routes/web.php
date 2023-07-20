@@ -5,6 +5,8 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\AdminBukuController;
+use App\Http\Controllers\AdminKategoriController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,9 +31,13 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin.redirect']], function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::resource('buku', AdminBukuController::class)->except(['show']);
+    Route::resource('kategori', AdminKategoriController::class)->except(['show']);
 });
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth', 'user.redirect']], function () {
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
-});
+}); 
+
+
 

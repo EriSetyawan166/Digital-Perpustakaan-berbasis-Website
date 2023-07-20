@@ -7,6 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Buku extends Model
 {
+    protected $table = 'buku';
+    protected $fillable = [
+        'judul', 
+        'pengguna_id',
+        'kategori_id',
+        'deskripsi',
+        'jumlah',
+        'file_path',
+        'cover_image_path',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
