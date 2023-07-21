@@ -64,7 +64,7 @@ class AdminBukuController extends Controller
 
         Alert::success('Sukses', 'Buku berhasil ditambahkan');
 
-        return redirect()->route('buku.index');
+        return redirect()->route('admin.buku.index');
     }
 
     /**
@@ -97,7 +97,7 @@ class AdminBukuController extends Controller
         
         $buku->save();
 
-        return redirect()->route('buku.index')->with('success', 'Buku berhasil diupdate');
+        return redirect()->route('admin.buku.index')->with('success', 'Buku berhasil diupdate');
     }
     /**
      * Remove the specified resource from storage.
@@ -115,6 +115,6 @@ class AdminBukuController extends Controller
         // Hapus data buku dari database
         $buku->delete();
 
-        return redirect()->route('buku.index')->with('success', 'Buku berhasil dihapus.');
+        return redirect()->route('admin.buku.index')->with('success', 'Buku berhasil dihapus.');
     }
 }

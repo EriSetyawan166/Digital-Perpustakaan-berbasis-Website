@@ -49,13 +49,13 @@
             </a>
           </li>
           <li class="nav-item active">
-            <a class="nav-link" href="{{ route('buku.index') }}">
+            <a class="nav-link" href="{{ route('admin.buku.index') }}">
               <i class="material-icons">book</i>
               <p>Buku</p>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('kategori.index') }}">
+            <a class="nav-link" href="{{ route('admin.kategori.index') }}">
               <i class="material-icons">category</i>
               <p>Kategori</p>
             </a>
@@ -141,7 +141,7 @@
                             </div>
                             <div class="modal-body">
                             <!-- Form tambah buku -->
-                            <form action="{{ route('buku.store') }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('admin.buku.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group">
                                     <input type="text" class="form-control text-dark" id="judul" name="judul" placeholder="Masukkan Judul">
@@ -254,7 +254,7 @@
             </div>
             <div class="modal-body">
                 <!-- Form Edit Buku -->
-                <form action="{{ route('buku.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.buku.update', $item->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="form-group">
@@ -305,7 +305,7 @@
                                   </div>
                                   <div class="modal-footer">
                                       <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                      <form action="{{ route('buku.destroy', $item->id) }}" method="POST">
+                                      <form action="{{ route('admin.buku.destroy', $item->id) }}" method="POST">
                                           @csrf
                                           @method('DELETE')
                                           <button type="submit" class="btn btn-danger">Hapus</button>

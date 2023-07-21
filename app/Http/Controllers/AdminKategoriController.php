@@ -38,7 +38,7 @@ class AdminKategoriController extends Controller
         $kategori->nama = $request->nama_kategori;
         $kategori->save();
 
-        return redirect()->route('kategori.index')->with('success', 'Data kategori "'.$kategori->nama.'" berhasil ditambahkan');
+        return redirect()->route('admin.kategori.index')->with('success', 'Data kategori "'.$kategori->nama.'" berhasil ditambahkan');
     }
     /**
      * Display the specified resource.
@@ -69,7 +69,7 @@ class AdminKategoriController extends Controller
         $kategori->nama = $request->nama_kategori;
         $kategori->save();
 
-        return redirect()->route('kategori.index')->with('success', 'Data kategori "'.$kategori->nama.'" berhasil diperbarui');
+        return redirect()->route('admin.kategori.index')->with('success', 'Data kategori "'.$kategori->nama.'" berhasil diperbarui');
     }
 
     /**
@@ -82,6 +82,6 @@ class AdminKategoriController extends Controller
 
         $kategori->delete();
 
-        return redirect()->route('kategori.index')->with('success', 'Kategori "'.$namaKategori.'" berhasil dihapus');
+        return redirect()->route('admin.kategori.index')->with('success', 'Kategori "'.$namaKategori.'" berhasil dihapus');
     }
 }

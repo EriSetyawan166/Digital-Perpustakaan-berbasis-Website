@@ -17,7 +17,7 @@ class User extends Authenticatable
 
     public function buku()
     {
-        return $this->hasMany(Buku::class);
+        return $this->hasMany(Buku::class, 'pengguna_id');
     }
 
     public function isAdmin()

@@ -43,21 +43,15 @@
       <div class="sidebar-wrapper">
         <ul class="nav">
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.dashboard') }}">
+            <a class="nav-link" href="{{ route('user.dashboard') }}">
               <i class="material-icons">dashboard</i>
               <p>Dashboard</p>
             </a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item active">
             <a class="nav-link" href="{{ route('admin.buku.index') }}">
               <i class="material-icons">book</i>
               <p>Buku</p>
-            </a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href="{{ route('admin.kategori.index') }}">
-              <i class="material-icons">category</i>
-              <p>Kategori</p>
             </a>
           </li>
         </ul>
@@ -124,119 +118,205 @@
             <div class="col-lg-12 col-md-12">
               <div class="card">
                 <div class="card-header card-header-primary">
-                  <h4 class="card-title">Data Kategori</h4>
-                  <p class="card-category">List Kategori</p>
+                  <h4 class="card-title">Data Buku</h4>
+                  <p class="card-category">List Buku yang Terdaftar</p>
                 </div>
                 <div class="card-body table-responsive">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalTambahKategori">Tambah Data</button>
-
-                <!-- Modal Tambah Kategori -->
-                <div class="modal fade" id="modalTambahKategori" tabindex="-1" role="dialog" aria-labelledby="modalTambahKategoriLabel" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="modalTambahKategoriLabel">Tambah Data Kategori</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                        <form action="{{ route('admin.kategori.store') }}" method="POST">
-                          @csrf
-                          <div class="form-group">
-                            <input value="{{ old('email') }}" type="text" class="form-control text-dark form-control-user @if($errors->has('nama_kategori')) is-invalid @endif" id="nama_kategori" name="nama_kategori" placeholder="Masukkan Nama Kategori">
-                            @if($errors->has('email'))
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $errors->first('email') }}</strong>
-                                            </span>
-                                        @endif
-                          </div>
-                          <button type="submit" class="btn btn-primary">Simpan</button>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-
-                <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Nama Kategori Buku</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($kategoris as $kategori)
-                            <tr>
-                                <td>{{($kategoris->currentPage() - 1) * $kategoris->perPage() + $loop->iteration}}</td>
-                                <td>{{ $kategori->nama }}</td>
-                                <td>
-                                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalEditKategori{{$kategori->id}}">Edit</button>
-                                    <a href="" class="btn btn-danger" data-toggle="modal" data-target="#modalHapusKategori{{$kategori->id}}"></i>Hapus</a>
-                                </td>
-                            </tr>
-                            @endforeach
-
-                            @foreach ($kategoris as $kategori)
-                            <div class="modal fade" id="modalHapusKategori{{$kategori->id}}" tabindex="-1" role="dialog" aria-labelledby="modalHapusKategoriLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5 class="modal-title" id="modalHapusKategoriLabel">Hapus Kategori</h5>
-                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalTambahBuku">Tambah Buku</button>
+                                <!-- Modal Tambah Buku -->
+                <div class="modal fade" id="modalTambahBuku" tabindex="-1" role="dialog" aria-labelledby="modalTambahBukuLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalTambahBukuLabel">Tambah Buku</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
-                                  </button>
-                                </div>
-                                <div class="modal-body">
-                                  <p>Apakah Anda yakin ingin menghapus kategori <strong>{{$kategori->nama}}</strong>?</p>
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                  <form action="{{ route('admin.kategori.destroy', $kategori->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Hapus</button>
-                                  </form>
-                                </div>
-                              </div>
+                                </button>
                             </div>
-                            </div>
+                            <div class="modal-body">
+                            <!-- Form tambah buku -->
+                            <form action="{{ route('user.buku.store') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-group">
+                                    <input type="text" class="form-control text-dark" id="judul" name="judul" placeholder="Masukkan Judul">
+                                </div>
+                                <div class="form-group">
+                                    <select class="form-control text-dark" id="kategori" name="kategori">
+                                        <option value="" disabled selected>Pilih Kategori</option>
+                                        @foreach($kategori as $k)
+                                            <option value="{{ $k->id }}">{{ $k->nama }}</option>
+                                        @endforeach
+                                        
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <textarea class="form-control text-dark" id="deskripsi" name="deskripsi" rows="3" placeholder="Masukkan Deskripsi"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control text-dark" id="jumlah" name="jumlah" placeholder="Masukkan Jumlah">
+                                </div>
+                                <div class="form-group">
+                                    <label for="file_buku">Upload File Buku (PDF)</label>
+                                    <input type="file" class="form-control-file text-dark" id="file_buku" name="file_buku" accept=".pdf">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cover_buku">Upload Cover Buku (JPEG/JPG/PNG)</label>
+                                    <input type="file" class="form-control-file text-dark" id="cover_buku" name="cover_buku" accept=".jpeg,.jpg,.png">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                            </form>
+                        </div>
 
-                            <!-- Modal Edit Kategori -->
-                            <div class="modal fade" id="modalEditKategori{{$kategori->id}}" tabindex="-1" role="dialog" aria-labelledby="modalEditKategoriLabel" aria-hidden="true">
-                              <div class="modal-dialog" role="document">
-                                <div class="modal-content">
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-hover">
+                  <thead>
+                      <tr>
+                          <th>No</th>
+                          <th>Judul</th>
+                          <th>Kategori</th>
+                          <th>Deskripsi</th>
+                          <th>Jumlah</th>
+                          <th>Uploader</th>
+                          <th>Aksi</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      @foreach($buku as $item)
+                      <tr>
+                          <td>{{($buku->currentPage() - 1) * $buku->perPage() + $loop->iteration}}</td>
+                          <td>{{ $item->judul }}</td>
+                          <td>{{ $item->category->nama }}</td>
+                          <td>{{ $item->deskripsi }}</td>
+                          <td>{{ $item->jumlah }}</td>
+                          <td>{{ $item->user->nama }}</td>
+                          <td>
+                              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBuku{{ $item->id }}">Detail</button>
+                          </td>
+                      </tr>
+                      @endforeach
+
+                      <!-- Modal -->
+                      @foreach($buku as $item)
+                      <div class="modal fade" id="modalBuku{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="modalBuku{{ $item->id }}Label" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" role="document">
+                              <div class="modal-content">
                                   <div class="modal-header">
-                                    <h5 class="modal-title" id="modalEditKategoriLabel">Edit Kategori</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                    </button>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                      </button>
                                   </div>
                                   <div class="modal-body">
-                                    <!-- Form edit kategori -->
-                                    <form action="{{ route('admin.kategori.update', $kategori->id) }}" method="POST">
-                                      @csrf
-                                      @method('PUT')
-                                      <div class="form-group">
-                                        <input value="{{ $kategori->nama }}" type="text" class="form-control text-dark" id="edit_nama_kategori" name="nama_kategori" placeholder="Nama Kategori">
+                                      <div class="row">
+                                          <div class="col-md-4">
+                                              <div class="image-container">
+                                                  <img class="card-img-top img-fluid" src="{{ asset('uploads/cover/' . $item->cover_image_path) }}" alt="{{ $item->judul }}">
+                                              </div>
+                                          </div>
+                                          <div class="col-md-8">
+                                              <h5 class="modal-title font-weight-bold">{{ $item->judul }}</h5>
+                                              <p>{{ $item->deskripsi }}</p>
+                                              <p>Jumlah: {{ $item->jumlah }}</p>
+                                              <p>Uploader: {{ $item->user->nama }}</p>
+                                          </div>
                                       </div>
-                                      <button type="submit" class="btn btn-primary">Simpan</button>
-                                    </form>
                                   </div>
-                                </div>
+                                  <div class="modal-footer">
+                                      <a href="{{ asset('uploads/buku/' . $item->file_path) }}" target="_blank" class="btn btn-primary">View PDF</a>
+                                      <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalEdit{{ $item->id }}">
+                                          Edit
+                                      </button>
+                                      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus{{ $item->id }}">
+                                          Hapus
+                                      </button>
+                                  </div>
                               </div>
-                            </div>
-
+                          </div>
+                      </div>
+                      @endforeach
+                      @foreach($buku as $item)
+                     <!-- Modal Edit Buku -->
+<div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="modalEdit{{ $item->id }}Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEdit{{ $item->id }}Label">Edit Buku</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form Edit Buku -->
+                <form action="{{ route('user.buku.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <div class="form-group">
+                        <input type="text" class="form-control text-dark" id="edit-judul" name="judul" value="{{ $item->judul }}" required>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control text-dark" id="edit-kategori" name="kategori" required>
+                            @foreach($kategori as $k)
+                                <option value="{{ $k->id }}" {{ $item->kategori_id == $k->id ? 'selected' : '' }}>{{ $k->nama }}</option>
                             @endforeach
-                        </tbody>
-                    </table>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control text-dark" id="edit-deskripsi" name="deskripsi" rows="3" required>{{ $item->deskripsi }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" class="form-control text-dark" id="edit-jumlah" name="jumlah" value="{{ $item->jumlah }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-file_buku">Upload File Buku (PDF)</label>
+                        <input type="file" class="form-control-file" id="edit-file_buku" name="file_buku" accept=".pdf">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-cover_buku">Upload Cover Buku (JPEG/JPG/PNG)</label>
+                        <input type="file" class="form-control-file" id="edit-cover_buku" name="cover_buku" accept=".jpeg,.jpg,.png">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@endforeach
+
+                      <!-- Modal Konfirmasi Hapus -->
+                      <div class="modal fade" id="modalHapus{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="modalHapus{{ $item->id }}Label" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h5 class="modal-title" id="modalHapus{{ $item->id }}Label">Konfirmasi Hapus</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                      </button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <p>Apakah Anda yakin ingin menghapus buku ini?</p>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                      <form action="{{ route('user.buku.destroy', $item->id) }}" method="POST">
+                                          @csrf
+                                          @method('DELETE')
+                                          <button type="submit" class="btn btn-danger">Hapus</button>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+
+                  </tbody>
+                </table>
                 </div>
               </div>
               <div class="card-footer">
 
-              {{$kategoris->links("pagination::bootstrap-5")->withClass('custom-pagination')}}
+              {{$buku->links("pagination::bootstrap-5")->withClass('custom-pagination')}}
 
             </div>
             </div>
