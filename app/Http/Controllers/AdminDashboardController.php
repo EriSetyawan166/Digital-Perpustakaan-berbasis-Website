@@ -30,26 +30,26 @@ class AdminDashboardController extends Controller
     }
 
     public function filter($kategori)
-{
-    // $kategori = KategoriBuku::all();
-        $buku = Buku::all();
-        $total_user = User::count();
-        $total_buku = Buku::count();
-        $total_kategori = KategoriBuku::count();
-    // Cek apakah parameter kategori memiliki nilai atau tidak
-    if ($kategori == 'all') {
-        $buku = Buku::all();
-    } else {
-        // Ambil buku berdasarkan kategori yang dipilih
-        $buku = Buku::whereHas('category', function ($query) use ($kategori) {
-            $query->where('id', $kategori);
-        })->get();
+    {
+        // $kategori = KategoriBuku::all();
+            $buku = Buku::all();
+            $total_user = User::count();
+            $total_buku = Buku::count();
+            $total_kategori = KategoriBuku::count();
+        // Cek apakah parameter kategori memiliki nilai atau tidak
+        if ($kategori == 'all') {
+            $buku = Buku::all();
+        } else {
+            // Ambil buku berdasarkan kategori yang dipilih
+            $buku = Buku::whereHas('category', function ($query) use ($kategori) {
+                $query->where('id', $kategori);
+            })->get();
+        }
+
+        // Ambil data kategori untuk dropdown filter
+        $kategori = KategoriBuku::all();
+
+        // Kembalikan view buku dengan data buku dan kategori
+        return view('admin.dashboard', compact('buku', 'kategori','total_kategori', 'total_buku', 'total_user'));
     }
-
-    // Ambil data kategori untuk dropdown filter
-    $kategori = KategoriBuku::all();
-
-    // Kembalikan view buku dengan data buku dan kategori
-    return view('admin.dashboard', compact('buku', 'kategori','total_kategori', 'total_buku', 'total_user'));
-}
 }

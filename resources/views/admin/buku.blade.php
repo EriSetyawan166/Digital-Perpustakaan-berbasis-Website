@@ -162,12 +162,16 @@
                                     <input type="number" class="form-control text-dark" id="jumlah" name="jumlah" placeholder="Masukkan Jumlah">
                                 </div>
                                 <div class="form-group">
-                                    <label for="file_buku">Upload File Buku (PDF)</label>
-                                    <input type="file" class="form-control-file text-dark" id="file_buku" name="file_buku" accept=".pdf">
+                                    <div class="custom-file">
+                                        <input type="file" class="form-control-file custom-file-input" id="file_buku" name="file_buku" accept=".pdf" onchange="updatePdfLabel()">
+                                        <label class="custom-file-label text-dark" for="file_buku">Upload PDF</label>
+                                    </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="cover_buku">Upload Cover Buku (JPEG/JPG/PNG)</label>
-                                    <input type="file" class="form-control-file text-dark" id="cover_buku" name="cover_buku" accept=".jpeg,.jpg,.png">
+                                    <div class="custom-file">
+                                        <input type="file" class="form-control-file custom-file-input" id="cover_buku" name="cover_buku" accept=".jpeg,.jpg,.png" onchange="updateCoverLabel()">
+                                        <label class="custom-file-label text-dark" for="cover_buku">Upload Cover</label>
+                                    </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Simpan</button>
                             </form>
@@ -243,53 +247,57 @@
                       @endforeach
                       @foreach($buku as $item)
                      <!-- Modal Edit Buku -->
-<div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="modalEdit{{ $item->id }}Label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalEdit{{ $item->id }}Label">Edit Buku</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Form Edit Buku -->
-                <form action="{{ route('admin.buku.update', $item->id) }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @method('PUT')
-                    <div class="form-group">
-                        <input type="text" class="form-control text-dark" id="edit-judul" name="judul" value="{{ $item->judul }}" required>
-                    </div>
-                    <div class="form-group">
-                        <select class="form-control text-dark" id="edit-kategori" name="kategori" required>
-                            @foreach($kategori as $k)
-                                <option value="{{ $k->id }}" {{ $item->kategori_id == $k->id ? 'selected' : '' }}>{{ $k->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <textarea class="form-control text-dark" id="edit-deskripsi" name="deskripsi" rows="3" required>{{ $item->deskripsi }}</textarea>
-                    </div>
-                    <div class="form-group">
-                        <input type="number" class="form-control text-dark" id="edit-jumlah" name="jumlah" value="{{ $item->jumlah }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-file_buku">Upload File Buku (PDF)</label>
-                        <input type="file" class="form-control-file" id="edit-file_buku" name="file_buku" accept=".pdf">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-cover_buku">Upload Cover Buku (JPEG/JPG/PNG)</label>
-                        <input type="file" class="form-control-file" id="edit-cover_buku" name="cover_buku" accept=".jpeg,.jpg,.png">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+                      <div class="modal fade" id="modalEdit{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="modalEdit{{ $item->id }}Label" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h5 class="modal-title" id="modalEdit{{ $item->id }}Label">Edit Buku</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                      </button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <!-- Form Edit Buku -->
+                                      <form action="{{ route('admin.buku.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                                          @csrf
+                                          @method('PUT')
+                                          <div class="form-group">
+                                              <input type="text" class="form-control text-dark" id="edit-judul" name="judul" value="{{ $item->judul }}" required>
+                                          </div>
+                                          <div class="form-group">
+                                              <select class="form-control text-dark" id="edit-kategori" name="kategori" required>
+                                                  @foreach($kategori as $k)
+                                                      <option value="{{ $k->id }}" {{ $item->kategori_id == $k->id ? 'selected' : '' }}>{{ $k->nama }}</option>
+                                                  @endforeach
+                                              </select>
+                                          </div>
+                                          <div class="form-group">
+                                              <textarea class="form-control text-dark" id="edit-deskripsi" name="deskripsi" rows="3" required>{{ $item->deskripsi }}</textarea>
+                                          </div>
+                                          <div class="form-group">
+                                              <input type="number" class="form-control text-dark" id="edit-jumlah" name="jumlah" value="{{ $item->jumlah }}" required>
+                                          </div>
+                                          <div class="form-group">
+                                              <div class="custom-file"> 
+                                                <label for="edit-file_buku" class="custom-file-label text-dark mb-5">{{$item->file_path}}</label>
+                                                <input type="file" class="form-control-file" id="edit-file_buku" name="file_buku" accept=".pdf" onchange="updatePdfLabelEdit()">
+                                              </div>
+                                          </div>
+                                          <div class="form-group">
+                                              <div class="custom-file"> 
+                                                <label for="edit-cover_buku" class="custom-file-label text-dark">{{$item->cover_image_path}}</label>
+                                                <input type="file" class="form-control-file" id="edit-cover_buku" name="cover_buku" accept=".jpeg,.jpg,.png" onchange="updateCoverLabelEdit()">
+                                                </div>
+                                          </div>
+                                          <button type="submit" class="btn btn-primary">Simpan</button>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
 
-@endforeach
-
+                      @endforeach
+                      @foreach($buku as $item)
                       <!-- Modal Konfirmasi Hapus -->
                       <div class="modal fade" id="modalHapus{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="modalHapus{{ $item->id }}Label" aria-hidden="true">
                           <div class="modal-dialog" role="document">
@@ -314,7 +322,7 @@
                               </div>
                           </div>
                       </div>
-
+                      @endforeach
 
                   </tbody>
                 </table>
@@ -528,6 +536,40 @@
 
     });
   </script>
+
+<script>
+    function updatePdfLabel() {
+        var pdfInput = document.getElementById('file_buku');
+        var pdfLabel = pdfInput.nextElementSibling;
+        var fileName = pdfInput.files[0].name;
+        pdfLabel.innerHTML = fileName;
+    }
+
+    function updateCoverLabel() {
+        var coverInput = document.getElementById('cover_buku');
+        var coverLabel = coverInput.nextElementSibling;
+        var fileName = coverInput.files[0].name;
+        coverLabel.innerHTML = fileName;
+    }
+</script>
+
+<script>
+    function updatePdfLabelEdit() {
+        var pdfInput = document.getElementById('edit-file_buku');
+        var pdfLabel = pdfInput.previousElementSibling;
+        var fileName = pdfInput.files[0].name;
+        pdfLabel.innerHTML = fileName;
+    }
+
+    function updateCoverLabelEdit() {
+        var coverInput = document.getElementById('edit-cover_buku');
+        var coverLabel = coverInput.previousElementSibling;
+        var fileName = coverInput.files[0].name;
+        coverLabel.innerHTML = fileName;
+    }
+</script>
+
+
 </body>
 @include('sweetalert::alert')
 </html>

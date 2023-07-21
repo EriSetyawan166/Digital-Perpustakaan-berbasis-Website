@@ -148,10 +148,42 @@
             </div>
           </div>
           <div class="row">
-              <div class="col-12">
-                <div class="d-flex flex-column">
-                  <!-- //add here -->
-                   <a class="carousel-control-prev " href="#bookCarousel" role="button" data-slide="prev" style="top: 50%; width: 50px; height: 50px; padding: 5px; background-color: black;">
+                <div class="col-12">
+                    <div class="d-flex flex-column">
+                        <div id="bookCarousel" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
+                                @php $count = 0; @endphp
+                                @forelse($buku->chunk(6) as $chunk)
+                                    <div class="carousel-item{{ $count == 0 ? ' active' : '' }}">
+                                        <div class="row">
+                                            @foreach($chunk as $item)
+                                                <div class="col-lg-2 col-md-3 col-sm-6">
+                                                    <div class="card">
+                                                        <img class="card-img-top" src="{{ asset('uploads/cover/' . $item->cover_image_path) }}" alt="{{ $item->judul }}">
+                                                        <div class="card-body text-center">
+                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBuku{{ $item->id }}">Detail</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                    @php $count++; @endphp
+                                @empty
+                                    <div class="carousel-item active" style="margin-top: 100px;">
+                                        <div class="row">
+                                            <div class="col-md-12 text-center">
+                                                <!-- Icon Placeholder -->
+                                                <i class="material-icons fa-5x">book</i>
+                                                <p style="font-size: 1.5rem;">Tidak ada Data Buku</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforelse
+                            </div>
+                            <!-- Indicators dan tombol carousel lainnya di sini -->
+                            @if(!$buku->isEmpty())
+                            <a class="carousel-control-prev" href="#bookCarousel" role="button" data-slide="prev" style="top: 50%; width: 50px; height: 50px; padding: 5px; background-color: black;">
                                 <span class="carousel-control-prev-icon" style="background-color: black; border-radius: 50%; width: 20px; height: 20px;" aria-hidden="true"></span>
                                 <span class="sr-only">Previous</span>
                             </a>
@@ -159,55 +191,23 @@
                                 <span class="carousel-control-next-icon" aria-hidden="true" style="background-color: black; border-radius: 50%; width: 20px; height: 20px;" aria-hidden="true"></span>
                                 <span class="sr-only">Next</span>
                             </a>
-                  <div id="bookCarousel" class="carousel slide" data-ride="carousel">
-                    
-                    <div class="carousel-inner">
-                        @php $count = 0; @endphp
-                        @foreach($buku->chunk(6) as $chunk)
-                        <div class="carousel-item{{ $count == 0 ? ' active' : '' }}">
-                            <div class="row">
-                                @foreach($chunk as $item)
-                                <div class="col-lg-2 col-md-3 col-sm-6">
-                                    <div class="card">
-                                        <img class="card-img-top" src="{{ asset('uploads/cover/' . $item->cover_image_path) }}" alt="{{ $item->judul }}">
-                                        <div class="card-body text-center">
-                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBuku{{ $item->id }}">Detail</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endforeach
+                            @endif
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <ol class="carousel-indicators">
+                                    @php $count = 0; @endphp
+                                    @foreach($buku->chunk(6) as $chunk)
+                                    <li data-target="#bookCarousel" data-slide-to="{{ $count }}" class="{{ $count == 0 ? 'active' : '' }}"></li>
+                                    @php $count++; @endphp
+                                    @endforeach
+                                </ol>
                             </div>
                         </div>
-                        @php $count++; @endphp
-                        @endforeach
-                    </div>
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <ol class="carousel-indicators">
-                                @php $count = 0; @endphp
-                                @foreach($buku->chunk(6) as $chunk)
-                                <li data-target="#bookCarousel" data-slide-to="{{ $count }}" class="{{ $count == 0 ? 'active' : '' }}"></li>
-                                @php $count++; @endphp
-                                @endforeach
-                            </ol>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <!-- <a class="carousel-control-prev" href="#bookCarousel" role="button" data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Previous</span>
-                            </a> -->
-                            <!-- <a class="carousel-control-next" href="#bookCarousel" role="button" data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Next</span>
-                            </a> -->
-                        </div>
                     </div>
                 </div>
-                </div>
-                  
-              </div>
+            </div>
           </div>
           <!-- Modal -->
           @foreach($buku as $item)
@@ -455,7 +455,7 @@
   <script>
       $('#btnFilter').click(function() {
           var selectedKategori = $('#filterKategori').val();
-          var url = "{{ route('buku.filter', ':kategori') }}";
+          var url = "{{ route('user.buku.filter', ':kategori') }}";
           url = url.replace(':kategori', selectedKategori);
           window.location.href = url;
       });

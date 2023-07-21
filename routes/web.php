@@ -48,7 +48,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin.redirect']], 
             'update' => 'admin.kategori.update',
             'destroy' => 'admin.kategori.destroy',
         ]);
-    Route::get('/filter/{kategori}', [AdminDashboardController::class, 'filter'])->name('buku.filter');
+    Route::get('/filter/{kategori}', [AdminDashboardController::class, 'filter'])->name('admin.buku.filter');
 
 });
 
@@ -62,6 +62,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'user.redirect']], fu
             'update' => 'user.buku.update',
             'destroy' => 'user.buku.destroy',
         ]);
+        Route::get('/filter/{kategori}', [UserDashboardController::class, 'filter'])->name('user.buku.filter');
 }); 
 
 
