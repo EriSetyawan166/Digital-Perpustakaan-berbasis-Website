@@ -27,6 +27,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
   <!-- CSS Files -->
   <link rel="stylesheet" href="{{ asset('css/material-dashboard.css') }}">
+
 </head>
 
 <body class="dark-edition">
@@ -195,14 +196,14 @@
                         <div class="carousel-item{{ $count == 0 ? ' active' : '' }}">
                             <div class="row justify-content-center">
                                 @foreach($chunk as $item)
-                                    <div class="col-lg-2 col-md-3 col-sm-6">
-                                        <div class="card" style="width: 180px;">
-                                            <img class="card-img-top" src="{{ asset('uploads/cover/' . $item->cover_image_path) }}" alt="{{ $item->judul }}" style="max-width: 100%">
-                                            <div class="card-body text-center">
-                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBuku{{ $item->id }}">Detail</button>
-                                            </div>
+                                <div class="col-lg-2 col-md-3 col-sm-6 book-col">
+                                    <div class="card mx-auto" style="width: 100%;">
+                                        <img class="card-img-top" src="{{ asset('uploads/cover/' . $item->cover_image_path) }}" alt="{{ $item->judul }}" style="width: 100%; height: auto; object-fit: cover;">
+                                        <div class="card-body d-flex justify-content-center align-items-center">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBuku{{ $item->id }}">Detail</button>
                                         </div>
                                     </div>
+                                </div>
                                 @endforeach
                             </div>
                         </div>
@@ -483,6 +484,12 @@
     $(document).ready(function() {
       // Javascript method's body can be found in assets/js/demos.js
       md.initDashboardPageCharts();
+      $('#bookCarousel').on('slid.bs.carousel', function () {
+    var currentIndex = $('#bookCarousel .carousel-item.active').index();
+    $('.carousel-indicators li').removeClass('active');
+    $('.carousel-indicators li').eq(currentIndex).addClass('active');
+});
+
 
     });
   </script>
@@ -501,6 +508,67 @@
           window.location.href = url;
       });
   </script>
+
+<script>
+  $(document).ready(function() {
+    // Store all books in an array
+    var books = [];
+    $('.book-col').each(function() {
+        books.push($(this).detach());
+    });
+
+    function updateBooksPerSlide() {
+        var width = $(window).width();
+
+        var booksPerSlide;
+        if (width >= 878) {
+            booksPerSlide = 6;
+        }  else {
+            booksPerSlide = 1; // or whatever number you want for smaller screens
+        }
+
+        // Remove all carousel items first
+        $('.carousel-item').remove();
+
+        // Then create new carousel items with the updated number of books per slide
+        var slideCount = 0;
+        for (var i = 0; i < books.length; i += booksPerSlide) {
+            var slide = $('<div class="carousel-item"></div>');
+            var row = $('<div class="row justify-content-center"></div>');
+            for (var j = i; j < i + booksPerSlide; j++) {
+                if (j < books.length) {
+                    row.append(books[j]);
+                }
+            }
+            slide.append(row);
+            $('.carousel-inner').append(slide);
+            slideCount++;
+        }
+
+        // Update carousel indicators
+        var indicators = $('.carousel-indicators');
+        indicators.empty();
+        for (var i = 0; i < slideCount; i++) {
+            var indicator = $('<li></li>').attr('data-target', '#bookCarousel').attr('data-slide-to', i);
+            if (i == 0) {
+                indicator.addClass('active');
+            }
+            indicators.append(indicator);
+        }
+
+        // Make the first carousel item active
+        $('.carousel-item').first().addClass('active');
+    }
+
+    // Update the number of books per slide when the page loads
+    updateBooksPerSlide();
+
+    // Update the number of books per slide whenever the window size changes
+    $(window).resize(updateBooksPerSlide);
+});
+
+</script>
+
 </body>
 @include('sweetalert::alert')
 </html>
